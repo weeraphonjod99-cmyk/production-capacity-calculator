@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="th">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>คำนวณกำลังการผลิต</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <main class="app-shell">
+    <header class="topbar">
+      <div>
+        <p class="eyebrow">Production Capacity</p>
+        <h1>คำนวณกำลังการผลิต</h1>
+      </div>
+      <div class="actions">
+        <button class="button secondary" id="resetSampleButton" type="button" title="โหลดข้อมูลตัวอย่าง">ตัวอย่าง</button>
+        <button class="button secondary" id="clearButton" type="button" title="ล้างข้อมูลทั้งหมด">ล้าง</button>
+        <button class="button primary" id="exportButton" type="button" title="ดาวน์โหลดข้อมูลเป็น CSV">ส่งออก CSV</button>
+      </div>
+    </header>
+
+    <section class="summary-grid" aria-label="สรุปกำลังการผลิต">
+      <div class="summary-tile total">
+        <span>กำลังผลิตรวมต่อวัน</span>
+        <strong id="totalDay">0</strong>
+        <small>ชิ้น/วัน</small>
+      </div>
+      <div class="summary-tile">
+        <span>กำลังผลิตรวมต่อชั่วโมง</span>
+        <strong id="totalHour">0</strong>
+        <small>ชิ้น/ชั่วโมง</small>
+      </div>
+      <div class="summary-tile">
+        <span>เครื่องคอขวด</span>
+        <strong id="bottleneckMachine">-</strong>
+        <small id="bottleneckValue">0 ชิ้น/วัน</small>
+      </div>
+      <div class="summary-tile">
+        <span>OEE เฉลี่ย</span>
+        <strong id="averageOee">0%</strong>
+        <small id="machineCount">0 เครื่อง</small>
+      </div>
+    </section>
+
+    <section class="workspace">
+      <div class="table-toolbar">
+        <div>
+          <h2>รายการเครื่องจักร</h2>
+          <p>สูตรหลัก: ((ชั่วโมงทำงาน x 60 - เวลาหยุด) x 60 / Cycle Time) x จำนวนชิ้นต่อรอบ x OEE x จำนวนเครื่อง</p>
+        </div>
+        <button class="button add" id="addMachineButton" type="button">เพิ่มเครื่อง</button>
+      </div>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>เครื่องจักร</th>
+              <th>จำนวนเครื่อง</th>
+              <th>ชั่วโมง/วัน</th>
+              <th>หยุด/วัน (นาที)</th>
+              <th>Cycle Time (วินาที)</th>
+              <th>ชิ้น/รอบ</th>
+              <th>OEE (%)</th>
+              <th>ชิ้น/ชั่วโมง</th>
+              <th>ชิ้น/วัน</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody id="machineRows"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="chart-section" aria-label="กราฟกำลังผลิตรายเครื่อง">
+      <div class="section-heading">
+        <h2>กำลังผลิตรายเครื่อง</h2>
+        <p id="chartHint">กราฟเรียงจากกำลังผลิตต่อวันมากไปน้อย</p>
+      </div>
+      <div class="bar-chart" id="barChart"></div>
+    </section>
+  </main>
+
+  <script src="app.js"></script>
+</body>
+</html>
