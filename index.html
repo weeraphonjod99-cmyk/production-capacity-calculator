@@ -48,6 +48,18 @@
       </div>
     </section>
 
+    <section class="import-panel" aria-label="นำเข้าข้อมูลจาก Excel">
+      <div>
+        <h2>นำเข้าข้อมูลทุกเครื่องจาก Excel</h2>
+        <p>รองรับไฟล์ .xlsx, .csv และ .tsv โดยอ่านคอลัมน์ชื่อเครื่อง, จำนวนเครื่อง, ชั่วโมง/วัน, เวลาหยุด, Cycle Time, ชิ้น/รอบ และ OEE</p>
+      </div>
+      <div class="import-actions">
+        <label class="button secondary file-button" for="importFileInput">เลือกไฟล์ Excel</label>
+        <input id="importFileInput" class="file-input" type="file" accept=".xlsx,.xlsm,.csv,.tsv,text/csv,text/tab-separated-values,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet">
+        <span id="importStatus" class="import-status" role="status">ยังไม่ได้นำเข้าไฟล์</span>
+      </div>
+    </section>
+
     <section class="workspace">
       <div class="table-toolbar">
         <div>
