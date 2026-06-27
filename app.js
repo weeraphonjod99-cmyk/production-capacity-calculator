@@ -40,6 +40,8 @@ const bottleneckValueEl = document.querySelector("#bottleneckValue");
 const averageOeeEl = document.querySelector("#averageOee");
 const machineCountEl = document.querySelector("#machineCount");
 const barChartEl = document.querySelector("#barChart");
+const installButton = document.querySelector("#installButton");
+let deferredInstallPrompt = null;
 
 document.querySelector("#addMachineButton").addEventListener("click", () => {
   machines.push({
@@ -66,6 +68,34 @@ document.querySelector("#resetSampleButton").addEventListener("click", () => {
 });
 
 document.querySelector("#exportButton").addEventListener("click", exportCsv);
+
+installButton.addEventListener("click", async () => {
+  if (!deferredInstallPrompt) return;
+
+  installButton.disabled = true;
+  deferredInstallPrompt.prompt();
+  await deferredInstallPrompt.userChoice;
+  deferredInstallPrompt = null;
+  installButton.hidden = true;
+  installButton.disabled = false;
+});
+
+window.addEventListener("beforeinstallprompt", (event) => {
+  event.preventDefault();
+  deferredInstallPrompt = event;
+  installButton.hidden = false;
+});
+
+window.addEventListener("appinstalled", () => {
+  deferredInstallPrompt = null;
+  installButton.hidden = true;
+});
+
+if ("serviceWorker" in navigator) {
+  window.addEventListener("load", () => {
+    navigator.serviceWorker.register("./service-worker.js");
+  });
+}
 
 render();
 

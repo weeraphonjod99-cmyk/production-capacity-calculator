@@ -116,6 +116,16 @@ input:focus-visible {
   border-color: var(--line);
 }
 
+.button.install-button {
+  border-color: rgba(20, 125, 100, 0.38);
+}
+
+.button.install-button:not([hidden]) {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
 .button.add {
   color: #ffffff;
   background: var(--blue);

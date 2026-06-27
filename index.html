@@ -3,7 +3,11 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#147d64">
+  <meta name="description" content="แอปคำนวณกำลังการผลิตรายเครื่องจักรและสรุปกำลังการผลิตรวม">
   <title>คำนวณกำลังการผลิต</title>
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="apple-touch-icon" href="icons/icon-192.png">
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
@@ -16,6 +20,7 @@
       <div class="actions">
         <button class="button secondary" id="resetSampleButton" type="button" title="โหลดข้อมูลตัวอย่าง">ตัวอย่าง</button>
         <button class="button secondary" id="clearButton" type="button" title="ล้างข้อมูลทั้งหมด">ล้าง</button>
+        <button class="button secondary install-button" id="installButton" type="button" title="ติดตั้งเป็นแอป" hidden>ติดตั้งแอป</button>
         <button class="button primary" id="exportButton" type="button" title="ดาวน์โหลดข้อมูลเป็น CSV">ส่งออก CSV</button>
       </div>
     </header>
