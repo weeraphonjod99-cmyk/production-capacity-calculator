@@ -8,6 +8,10 @@
 
 https://weeraphonjod99-cmyk.github.io/production-capacity-calculator/
 
+รายงานวิเคราะห์กำลังการผลิตรายเครื่อง:
+
+https://weeraphonjod99-cmyk.github.io/production-capacity-calculator/analysis.html
+
 ## ความสามารถหลัก
 
 - เพิ่ม แก้ไข และลบเครื่องจักร

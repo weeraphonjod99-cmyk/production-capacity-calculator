@@ -1,10 +1,15 @@
-const CACHE_NAME = "production-capacity-calculator-v4";
+const CACHE_NAME = "production-capacity-calculator-v5";
 const APP_ASSETS = [
   "./",
   "./index.html",
+  "./analysis.html",
   "./styles.css",
+  "./analysis.css",
   "./app.js",
+  "./analysis-data.js",
+  "./analysis.js",
   "./manifest.webmanifest",
+  "./reports/Machine_Capacity_Analysis_2026-06-27.xlsx",
   "./icons/icon-192.png",
   "./icons/icon-512.png"
 ];

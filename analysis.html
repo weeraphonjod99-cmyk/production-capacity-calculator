@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="th">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#147d64">
+  <title>รายงานวิเคราะห์กำลังการผลิตรายเครื่อง</title>
+  <link rel="stylesheet" href="./analysis.css">
+</head>
+<body>
+  <main class="report-shell">
+    <header class="report-topbar">
+      <div>
+        <p class="eyebrow">PRODUCTION CAPACITY ANALYSIS</p>
+        <h1>รายงานวิเคราะห์กำลังการผลิตรายเครื่อง</h1>
+        <p class="subtitle" id="sourceSummary">กำลังโหลดข้อมูล...</p>
+      </div>
+      <div class="actions">
+        <a class="button secondary" href="./index.html">กลับหน้าโปรแกรม</a>
+        <a class="button primary" id="downloadReport" href="#" download>ดาวน์โหลด Excel</a>
+      </div>
+    </header>
+
+    <section class="kpi-grid" id="kpiGrid" aria-label="สรุปกำลังผลิต"></section>
+
+    <section class="summary-band">
+      <div>
+        <h2>สรุปผลวิเคราะห์</h2>
+        <p id="executiveSummary"></p>
+      </div>
+      <div class="status-grid" id="statusGrid" aria-label="สถานะเครื่อง"></div>
+    </section>
+
+    <section class="chart-grid">
+      <article class="panel">
+        <div class="panel-heading">
+          <h2>เครื่องที่โหลดสูงสุด</h2>
+          <p>เรียงจาก Utilization มากไปน้อย</p>
+        </div>
+        <div class="bar-chart" id="utilizationChart"></div>
+      </article>
+
+      <article class="panel">
+        <div class="panel-heading">
+          <h2>Required vs Available Shifts</h2>
+          <p>เปรียบเทียบชั่วโมง/กะที่ต้องใช้กับกำลังที่มี</p>
+        </div>
+        <div class="shift-chart" id="shiftChart"></div>
+      </article>
+    </section>
+
+    <section class="panel">
+      <div class="panel-heading">
+        <h2>สรุปความสามารถในการผลิตรายเครื่อง</h2>
+        <p>Monthly capacity คำนวณจากกำลังผลิต 10 ชั่วโมง x 26 วัน x จำนวนเครื่อง</p>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>อันดับ</th>
+              <th>เครื่อง/Section</th>
+              <th>งาน</th>
+              <th>Demand/เดือน</th>
+              <th>Capacity/เดือน</th>
+              <th>Required shifts</th>
+              <th>Available shifts</th>
+              <th>Utilization</th>
+              <th>เครื่องที่ต้องเพิ่ม</th>
+              <th>สถานะ</th>
+            </tr>
+          </thead>
+          <tbody id="machineTable"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="panel">
+      <div class="panel-heading">
+        <h2>สินค้า/งานที่ใช้กำลังสูง</h2>
+        <p>รายการผลิตที่มี utilization สูงสุดจากข้อมูล Excel</p>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>อันดับ</th>
+              <th>เครื่อง</th>
+              <th>สินค้า</th>
+              <th>Spec</th>
+              <th>Forecast/เดือน</th>
+              <th>Required shifts</th>
+              <th>Utilization</th>
+            </tr>
+          </thead>
+          <tbody id="productTable"></tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+
+  <script src="./analysis-data.js"></script>
+  <script src="./analysis.js"></script>
+</body>
+</html>
