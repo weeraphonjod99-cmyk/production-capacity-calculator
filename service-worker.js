@@ -1,4 +1,4 @@
-const CACHE_NAME = "production-capacity-calculator-v3";
+const CACHE_NAME = "production-capacity-calculator-v4";
 const APP_ASSETS = [
   "./",
   "./index.html",

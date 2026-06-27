@@ -4,8 +4,8 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#147d64">
-  <meta name="description" content="แอปคำนวณกำลังการผลิตรายเครื่องจักรและสรุปกำลังการผลิตรวม">
-  <title>คำนวณกำลังการผลิต</title>
+  <meta name="description" content="โปรแกรมจัดการเครื่องจักร งานผลิต และวิเคราะห์กำลังการผลิต">
+  <title>โปรแกรมวิเคราะห์กำลังการผลิต</title>
   <link rel="manifest" href="manifest.webmanifest">
   <link rel="apple-touch-icon" href="icons/icon-192.png">
   <link rel="stylesheet" href="styles.css">
@@ -15,13 +15,13 @@
     <header class="topbar">
       <div>
         <p class="eyebrow">Production Capacity</p>
-        <h1>คำนวณกำลังการผลิต</h1>
+        <h1>โปรแกรมวิเคราะห์กำลังการผลิต</h1>
       </div>
       <div class="actions">
-        <button class="button secondary" id="resetSampleButton" type="button" title="โหลดข้อมูลตัวอย่าง">ตัวอย่าง</button>
-        <button class="button secondary" id="clearButton" type="button" title="ล้างข้อมูลทั้งหมด">ล้าง</button>
-        <button class="button secondary install-button" id="installButton" type="button" title="ติดตั้งเป็นแอป" hidden>ติดตั้งแอป</button>
-        <button class="button primary" id="exportButton" type="button" title="ดาวน์โหลดข้อมูลเป็น CSV">ส่งออก CSV</button>
+        <button class="button secondary" id="resetSampleButton" type="button">ตัวอย่าง</button>
+        <button class="button secondary" id="clearButton" type="button">ล้าง</button>
+        <button class="button secondary install-button" id="installButton" type="button" hidden>ติดตั้งแอป</button>
+        <button class="button primary" id="exportButton" type="button">ส่งออก CSV</button>
       </div>
     </header>
 
@@ -32,56 +32,108 @@
         <small>ชิ้น/วัน</small>
       </div>
       <div class="summary-tile">
-        <span>กำลังผลิตรวมต่อชั่วโมง</span>
-        <strong id="totalHour">0</strong>
-        <small>ชิ้น/ชั่วโมง</small>
+        <span>กำลังผลิตรวมต่อเดือน</span>
+        <strong id="totalMonth">0</strong>
+        <small id="monthBasis">26 วันทำงาน</small>
       </div>
       <div class="summary-tile">
-        <span>เครื่องคอขวด</span>
-        <strong id="bottleneckMachine">-</strong>
-        <small id="bottleneckValue">0 ชิ้น/วัน</small>
+        <span>ยอดงานรวมต่อเดือน</span>
+        <strong id="totalDemand">0</strong>
+        <small>ชิ้น/เดือน</small>
       </div>
       <div class="summary-tile">
-        <span>OEE เฉลี่ย</span>
-        <strong id="averageOee">0%</strong>
+        <span>เครื่องโหลดเกิน</span>
+        <strong id="overloadedCount">0</strong>
         <small id="machineCount">0 เครื่อง</small>
       </div>
     </section>
 
-    <section class="import-panel" aria-label="นำเข้าข้อมูลจาก Excel">
-      <div>
-        <h2>นำเข้าข้อมูลทุกเครื่องจาก Excel</h2>
-        <p>รองรับไฟล์ .xlsx, .csv และ .tsv โดยอ่านคอลัมน์ชื่อเครื่อง, จำนวนเครื่อง, ชั่วโมง/วัน, เวลาหยุด, Cycle Time, ชิ้น/รอบ และ OEE</p>
-      </div>
+    <section class="settings-panel">
+      <label>
+        วันทำงานต่อเดือน
+        <input id="workingDaysInput" type="number" min="1" max="31" step="1">
+      </label>
+      <label>
+        เกณฑ์เตือนโหลดสูง (%)
+        <input id="warningThresholdInput" type="number" min="1" max="100" step="1">
+      </label>
       <div class="import-actions">
-        <label class="button secondary file-button" for="importFileInput">เลือกไฟล์ Excel</label>
+        <label class="button secondary file-button" for="importFileInput">นำเข้า Excel/CSV</label>
         <input id="importFileInput" class="file-input" type="file" accept=".xlsx,.xlsm,.csv,.tsv,text/csv,text/tab-separated-values,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet">
         <span id="importStatus" class="import-status" role="status">ยังไม่ได้นำเข้าไฟล์</span>
       </div>
     </section>
 
+    <section class="form-grid" aria-label="เพิ่มข้อมูล">
+      <form class="input-panel" id="machineForm">
+        <div class="section-heading compact">
+          <div>
+            <h2>เพิ่มเครื่องจักร</h2>
+            <p>กำหนดกำลังผลิตพื้นฐานของเครื่อง</p>
+          </div>
+        </div>
+        <div class="form-fields">
+          <label>ชื่อเครื่อง <input name="name" required placeholder="เช่น Press-02"></label>
+          <label>ประเภท <input name="type" placeholder="Press, CNC, Welding"></label>
+          <label>จำนวนเครื่อง <input name="quantity" type="number" min="1" step="1" value="1"></label>
+          <label>ชั่วโมง/วัน <input name="hoursPerDay" type="number" min="0" step="0.25" value="8"></label>
+          <label>หยุด/วัน (นาที) <input name="downtimeMinutes" type="number" min="0" step="1" value="0"></label>
+          <label>Cycle Time (วินาที) <input name="cycleSeconds" type="number" min="0.01" step="0.01" value="60"></label>
+          <label>ชิ้น/รอบ <input name="unitsPerCycle" type="number" min="0.01" step="0.01" value="1"></label>
+          <label>OEE (%) <input name="oee" type="number" min="0" max="100" step="0.1" value="85"></label>
+        </div>
+        <button class="button add" type="submit">เพิ่มเครื่อง</button>
+      </form>
+
+      <form class="input-panel" id="jobForm">
+        <div class="section-heading compact">
+          <div>
+            <h2>เพิ่มงานผลิต</h2>
+            <p>ผูกงานกับเครื่องเพื่อคำนวณโหลดการผลิต</p>
+          </div>
+        </div>
+        <div class="form-fields">
+          <label>ชื่องาน/สินค้า <input name="name" required placeholder="เช่น Arc Plate"></label>
+          <label>รหัสงาน <input name="code" placeholder="Part no."></label>
+          <label>เครื่องจักร <select name="machineId" id="jobMachineSelect" required></select></label>
+          <label>จำนวนที่ต้องผลิต/เดือน <input name="monthlyDemand" type="number" min="0" step="1" value="10000"></label>
+          <label>กำหนดส่ง <input name="dueDate" type="date"></label>
+          <label>ความสำคัญ
+            <select name="priority">
+              <option value="ปกติ">ปกติ</option>
+              <option value="สูง">สูง</option>
+              <option value="เร่งด่วน">เร่งด่วน</option>
+            </select>
+          </label>
+        </div>
+        <button class="button add" type="submit">เพิ่มงาน</button>
+      </form>
+    </section>
+
     <section class="workspace">
       <div class="table-toolbar">
         <div>
-          <h2>รายการเครื่องจักร</h2>
-          <p>สูตรหลัก: ((ชั่วโมงทำงาน x 60 - เวลาหยุด) x 60 / Cycle Time) x จำนวนชิ้นต่อรอบ x OEE x จำนวนเครื่อง</p>
+          <h2>สรุปเครื่องจักร</h2>
+          <p>โหลดเครื่อง = ยอดงานต่อเดือน / กำลังผลิตต่อเดือน</p>
         </div>
-        <button class="button add" id="addMachineButton" type="button">เพิ่มเครื่อง</button>
       </div>
-
       <div class="table-wrap">
         <table>
           <thead>
             <tr>
               <th>เครื่องจักร</th>
-              <th>จำนวนเครื่อง</th>
+              <th>ประเภท</th>
+              <th>จำนวน</th>
               <th>ชั่วโมง/วัน</th>
-              <th>หยุด/วัน (นาที)</th>
-              <th>Cycle Time (วินาที)</th>
+              <th>หยุด/วัน</th>
+              <th>Cycle</th>
               <th>ชิ้น/รอบ</th>
-              <th>OEE (%)</th>
-              <th>ชิ้น/ชั่วโมง</th>
+              <th>OEE</th>
               <th>ชิ้น/วัน</th>
+              <th>ชิ้น/เดือน</th>
+              <th>งาน/เดือน</th>
+              <th>โหลด</th>
+              <th>สถานะ</th>
               <th></th>
             </tr>
           </thead>
@@ -90,10 +142,36 @@
       </div>
     </section>
 
-    <section class="chart-section" aria-label="กราฟกำลังผลิตรายเครื่อง">
+    <section class="workspace">
+      <div class="table-toolbar">
+        <div>
+          <h2>รายการงานผลิต</h2>
+          <p>เพิ่มงานใหม่หรือแก้ไขเครื่องที่รับงานได้ทันที</p>
+        </div>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>งาน/สินค้า</th>
+              <th>รหัส</th>
+              <th>เครื่องจักร</th>
+              <th>จำนวน/เดือน</th>
+              <th>วันผลิตที่ต้องใช้</th>
+              <th>กำหนดส่ง</th>
+              <th>ความสำคัญ</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody id="jobRows"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="chart-section" aria-label="กราฟโหลดเครื่องจักร">
       <div class="section-heading">
-        <h2>กำลังผลิตรายเครื่อง</h2>
-        <p id="chartHint">กราฟเรียงจากกำลังผลิตต่อวันมากไปน้อย</p>
+        <h2>โหลดเครื่องจักร</h2>
+        <p>เรียงจากเครื่องที่โหลดสูงที่สุด</p>
       </div>
       <div class="bar-chart" id="barChart"></div>
     </section>
